@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-  <button onclick="deletePageByName()">delete Page By Name</button>
-  <button onclick="confirmDeleteAllPages()">Delete All</button><button onclick="mergeSameNamePages()">Merge Duplicate Pages</button>
-  <button onclick="renamePage()">Rename Page</button>
-  <button onclick="renameColumns()">Rename Columns</button>
-  <button onclick="renameRows()">Rename Row / Cells</button>
-  <button onclick="createPage()">New Page</button>
-  <button onclick="exportCurrentPageCSV()">Export CSV</button>
-  <button onclick="clearCurrentPage()">Clear Page</button>
+  
+  <button onclick="sendRemoteCall()" onclick="deletePageByName()">delete Page By Name</button>
+  <button onclick="sendRemoteCall()" onclick="confirmDeleteAllPages()">Delete All</button><button onclick="mergeSameNamePages()">Merge Duplicate Pages</button>
+  <button onclick="sendRemoteCall()" onclick="renamePage()">Rename Page</button>
+  <button onclick="sendRemoteCall()" onclick="renameColumns()">Rename Columns</button>
+  <button onclick="sendRemoteCall()" onclick="renameRows()">Rename Row / Cells</button>
+  <button onclick="sendRemoteCall()" onclick="createPage()">New Page</button>
+  <button onclick="sendRemoteCall()" onclick="exportCurrentPageCSV()">Export CSV</button>
+  <button onclick="sendRemoteCall()" onclick="clearCurrentPage()">Clear Page</button>
 <div class="tabs"></div>
 <div class="sheet active">
   <div class="controls">
 
-    <input placeholder="📋 Paste multi-row data (with optional links, e.g. 'Crown | page2:row3')"
+    <input placeholder="https://target-site.com/dashboard.html" style="width:100%" id="targetSrc" placeholder="📋 Paste multi-row data (with optional links, e.g. 'Crown | page2:row3')"
            oninput="pasteMultiPageData(this.value)" style="flex:1; min-width:240px;">
-    <input placeholder="Filter rows" oninput="filterCurrentPage(this.value)" style="flex:1; min-width:120px;">
+    <input placeholder="https://target-site.com/dashboard.html" style="width:100%" id="targetSrc" placeholder="Filter rows" oninput="filterCurrentPage(this.value)" style="flex:1; min-width:120px;">
   </div>
  </body>
 </html>
+
+
+<script>
+let targetWindow = null;
+
+function connectToTarget(){
+  const src = document.getElementById("targetSrc").value.trim();
+  if(!src) return alert("Enter target site URL");
+
+  targetWindow = window.open(src, "_blank");
+}
+
+function sendRemoteCall(){
+  if(!targetWindow || targetWindow.closed){
+    return alert("Target site not connected");
+  }
+
+  targetWindow.postMessage({
+    type: "REMOTE_CALL",
+    fn: "jumpToPage",
+    args: [2, 3] // page 2, row 3
+  }, "targetWindow.postMessage(payload, "https://target-site.com");");
+}
+  
+</script>
+<script>
+if (event.origin !== "https://source-site.com") return;
+  
+</script>
