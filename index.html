@@ -1,51 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-  
-  <button onclick="sendRemoteCall()" onclick="deletePageByName()">delete Page By Name</button>
-  <button onclick="sendRemoteCall()" onclick="confirmDeleteAllPages()">Delete All</button><button onclick="mergeSameNamePages()">Merge Duplicate Pages</button>
-  <button onclick="sendRemoteCall()" onclick="renamePage()">Rename Page</button>
-  <button onclick="sendRemoteCall()" onclick="renameColumns()">Rename Columns</button>
-  <button onclick="sendRemoteCall()" onclick="renameRows()">Rename Row / Cells</button>
-  <button onclick="sendRemoteCall()" onclick="createPage()">New Page</button>
-  <button onclick="sendRemoteCall()" onclick="exportCurrentPageCSV()">Export CSV</button>
-  <button onclick="sendRemoteCall()" onclick="clearCurrentPage()">Clear Page</button>
-<div class="tabs"></div>
-<div class="sheet active">
-  <div class="controls">
 
-    <input placeholder="https://1pagequicksites.github.io/infoPage/" style="width:100%" id="targetSrc" placeholder="📋 Paste multi-row data (with optional links, e.g. 'Crown | page2:row3')"
-           oninput="pasteMultiPageData(this.value)" style="flex:1; min-width:240px;">
-    <input placeholder="https://1pagequicksites.github.io/infoPage/" style="width:100%" id="targetSrc" placeholder="Filter rows" oninput="filterCurrentPage(this.value)" style="flex:1; min-width:120px;">
-  </div>
- </body>
-</html>
+<button onclick="connectToTarget()">Connect</button>
+<button onclick="sendRemoteCall('deletePageByName')">Delete Page</button>
+<button onclick="sendRemoteCall('confirmDeleteAllPages')">Delete All</button>
 
+<input id="targetSrc" style="width:100%"
+  placeholder="https://1pagequicksites.github.io/infoPage/" />
 
 <script>
 let targetWindow = null;
+const targetOrigin = "https://1pagequicksites.github.io";
 
-function connectToTarget(){
+function connectToTarget() {
   const src = document.getElementById("targetSrc").value.trim();
-  if(!src) return alert("https://1pagequicksites.github.io/infoPage/");
-
+  if (!src) return alert("Enter target URL");
   targetWindow = window.open(src, "_blank");
 }
 
-function sendRemoteCall(){
-  if(!targetWindow || targetWindow.closed){
-    return alert("Target site not connected");
+function sendRemoteCall(fn) {
+  if (!targetWindow || targetWindow.closed) {
+    return alert("Target not connected");
   }
 
   targetWindow.postMessage({
     type: "REMOTE_CALL",
-    fn: "jumpToPage",
-    args: [2, 3] // page 2, row 3
-  }, "targetWindow.postMessage(payload, "https://1pagequicksites.github.io/infoPage/");");
+    fn
+  }, targetOrigin);
 }
-  
 </script>
-<script>
-if (event.origin !== "https://1pagequicksites.github.io/infoPage/") return;
-  
-</script>
+
+</body>
+</html>
